@@ -348,16 +348,23 @@ Media.configurePhotoAlbum = function (session, uploadId, caption, width, height,
         media_folder: 'Instagram',
         device: session.device.payload,
         edits: {
-            crop_original_size:[width.toFixed(1),height.toFixed(1)],
-            crop_center: [(0).toFixed(1), "-" + (0).toFixed(1)],
-            crop_zoom: CROP.toFixed(1)
+            crop_original_size:[+width.toFixed(1), +height.toFixed(1)],
+            crop_center: [+(0).toFixed(1), +("-" + (0).toFixed(1))],
+            crop_zoom: +CROP.toFixed(1)
         },
         extra: {
-            source_width: width,
-            source_height: height
+            source_width: +width.toFixed(1),
+            source_height: +height.toFixed(1)
         }
     };
-    return Promise.resolve(payload);
+
+    return Media.configurePhoto(session, uploadId, caption)
+        .then(function () {
+            return Promise.resolve(payload);
+        })
+        .catch(function (res) {
+            console.log(res);
+        })
 };
 
 Media.configureVideoAlbum = function (session, uploadId, caption, durationms, delay, width, height) {
@@ -403,11 +410,11 @@ Media.configureAlbum = function (session, medias, caption, disableComments) {
     caption = caption || '';
     disableComments = disableComments || false;
 
-    Promise.mapSeries(medias, function (media) {
+    return Promise.mapSeries(medias, function (media) {
         if(media.type === 'photo') {
-            return Media.configurePhotoAlbum(session, media.uploadId, caption, media.size[0], media.size[1], media.usertags)
+            return Media.configurePhotoAlbum(session, media.uploadId, undefined, undefined, undefined, media.usertags)
         } else if (media.type === 'video') {
-            return Media.configureVideoAlbum(session, media.uploadId, caption, media.durationms, media.delay, media.size[0], media.size[1]);
+            return Media.configureVideoAlbum(session, media.uploadId, undefined, media.durationms, media.delay, media.size[0], media.size[1]);
         } else {
             throw new Error('Invalid media type: ' + media.type);
         }

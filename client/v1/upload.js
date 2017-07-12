@@ -71,6 +71,9 @@ Upload.photo = function (session, streamOrPath, uploadId, name, isSidecar) {
         .then(function(json) {
             return new Upload(session, json);    
         })
+        .catch(function (error) {
+            return Promise.reject({error: error});
+        })
 }
 
 Upload.video = function(session,videoBufferOrPath,photoStreamOrPath,isSidecar){
@@ -168,6 +171,9 @@ Upload.album = function (session, medias, caption, disableComments) {
                 Upload.photo(session, media.data, undefined, undefined, true)
                     .then(function (payload) {
                         return Promise.resolve(Object.assign({}, {uploadId: payload.params.uploadId}, media));
+                    })
+                    .catch(function (error) {
+                        return Promise.reject({error: error});
                     })
             )
         }
