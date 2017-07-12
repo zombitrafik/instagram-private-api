@@ -15,7 +15,7 @@ Community is taking care of development and new features. Thanks to: @IvanMMM @S
 ----
 
 **Installation**
-
+test
 
 You can install this by using npm:
 ```
