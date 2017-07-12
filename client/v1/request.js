@@ -370,6 +370,7 @@ Request.prototype.send = function (options, attemps) {
             throw new Exceptions.RequestError(json);
         })
         .catch(function(error) {
+        console.log(error);
             return that.beforeError(error, options, attemps)
         })
         .catch(function (err) {
